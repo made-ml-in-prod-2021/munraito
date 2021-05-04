@@ -28,9 +28,9 @@ def eval_pipeline(params: EvalPipelineParams) -> NoReturn:
         transformed_df,
     )
     logger.info(f"preds.shape is {preds.shape}")
-    # preds_df = pd.DataFrame(preds)
     pd.DataFrame(preds).to_csv(params.preds_path, header=False)
     logger.info(f"predicts saved to the {params.preds_path}")
+    return preds
 
 
 @hydra.main(config_path="configs", config_name="eval_config")

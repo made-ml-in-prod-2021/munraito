@@ -3,6 +3,7 @@ input_df_path: "data/raw/heart.csv"
 output_model_path: "models/model.pkl"
 output_transformer_path: "models/transformer.pkl"
 metric_path: "models/metrics.json"
+report_path: "reports/EDA_pandas_profiling.html"
 # features
 categorical_features:
   - "sex"

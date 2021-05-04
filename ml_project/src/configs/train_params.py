@@ -27,6 +27,7 @@ class TrainingPipelineParams:
     output_model_path: str
     output_transformer_path: str
     metric_path: str
+    report_path: str
     # feature params
     categorical_features: List[str]
     numerical_features: List[str]
