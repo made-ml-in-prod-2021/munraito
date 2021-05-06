@@ -27,7 +27,7 @@ def eval_params(tmpdir, fake_eval_df):
         input_df_path=fake_eval_df,
         preds_path=tmpdir.join("preds.csv"),
         transformer_path=tmpdir.join("transformer.pkl"),
-        model_path=tmpdir.join("model.pkl")
+        model_path=tmpdir.join("model.pkl"),
     )
 
 

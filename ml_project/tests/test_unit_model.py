@@ -5,7 +5,13 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from typing import Tuple
 
-from src.models import train_model, predict_model, evaluate_model, serialize_model, deserialize_model
+from src.models import (
+    train_model,
+    predict_model,
+    evaluate_model,
+    serialize_model,
+    deserialize_model,
+)
 from src.build_features import build_transformer, make_features
 
 

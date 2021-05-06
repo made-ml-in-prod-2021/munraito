@@ -18,7 +18,7 @@ class CustomStandardScaler(BaseEstimator, TransformerMixin):
 
     def transform(self, x: np.ndarray) -> np.ndarray:
         if self.mean is None or self.std is None:
-            raise TransformException('must be fitted first')
+            raise TransformException("must be fitted first")
         else:
             x = (x - self.mean) / self.std
             return x

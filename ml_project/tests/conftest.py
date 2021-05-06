@@ -2,8 +2,6 @@ import pytest
 
 from .generate_data import generate_data
 from src.configs.train_params import LRParams, TrainingPipelineParams
-from src.configs.eval_params import EvalPipelineParams
-from train_pipeline import train_pipeline
 from .constants import *
 
 
@@ -33,6 +31,6 @@ def train_params(tmpdir, fake_df):
             penalty="l2",
             tol=1e-4,
             C=1.0,
-            random_state=69
-        )
+            random_state=69,
+        ),
     )

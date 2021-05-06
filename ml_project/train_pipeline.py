@@ -2,22 +2,20 @@ import logging
 import json
 import os
 
-# import click
 from omegaconf import DictConfig
 import hydra
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from src.configs.train_params import TrainingPipelineParamsSchema, TrainingPipelineParams
+from src.configs.train_params import (
+    TrainingPipelineParamsSchema,
+    TrainingPipelineParams,
+)
 from src.build_features import build_transformer, make_features, serialize_transformer
 from src.models import train_model, predict_model, evaluate_model, serialize_model
 
 logger = logging.getLogger("train_pipeline")
-# formatter = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
-# handler = logging.StreamHandler(sys.stdout)
 logger.setLevel(logging.INFO)
-# logger.setFormatter(formatter)
-# logger.addHandler(handler)
 
 
 def train_pipeline(params: TrainingPipelineParams):
@@ -34,15 +32,11 @@ def train_pipeline(params: TrainingPipelineParams):
     train_target = train[params.target_col]
     transformer = build_transformer(params)
     transformer.fit(train_feats)
-    serialize_transformer(
-        transformer, params.output_transformer_path
-    )
+    serialize_transformer(transformer, params.output_transformer_path)
     train_feats = make_features(transformer, train_feats)
     logger.info(f"train_feats.shape is {train_feats.shape}")
 
-    model = train_model(
-        train_feats, train_target, params.model
-    )
+    model = train_model(train_feats, train_target, params.model)
     val_feats = make_features(transformer, val)
     val_target = val[params.target_col]
     logger.info(f"val_feats.shape is {val_feats.shape}")
