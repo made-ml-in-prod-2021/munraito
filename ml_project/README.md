@@ -2,7 +2,8 @@ ml_project
 ==============================
 
 Production ready ML-project
-Author: Tsvetkov Vitaly
+
+Author: Tsvetkov Vitaly (MADE-DS-22)
 
 Project Organization
 ------------
