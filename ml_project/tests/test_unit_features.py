@@ -9,7 +9,7 @@ from src.build_features import (
     serialize_transformer,
     deserialize_transformer,
 )
-from .constants import *
+from .constants import NUM_FEATS
 
 
 def test_custom_scaler(fake_df):

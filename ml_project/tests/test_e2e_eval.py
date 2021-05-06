@@ -3,7 +3,7 @@ import os
 
 from src.configs.eval_params import EvalPipelineParams
 from .generate_data import generate_data
-from .constants import *
+from .constants import EVAL_ROWS, DF_PATH, CAT_FEATS, NUM_FEATS
 from eval_pipeline import eval_pipeline
 from train_pipeline import train_pipeline
 

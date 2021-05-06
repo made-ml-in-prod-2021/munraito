@@ -2,7 +2,7 @@ import pytest
 
 from .generate_data import generate_data
 from src.configs.train_params import LRParams, TrainingPipelineParams
-from .constants import *
+from .constants import TRAIN_ROWS, DF_PATH, CAT_FEATS, NUM_FEATS, TARGET_COL
 
 
 @pytest.fixture
