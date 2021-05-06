@@ -58,9 +58,13 @@ Make pandas profiling report, save it to `reports/`:
 python visualize.py
 ```
 
-Train the model and save all artifacts to `models/`:
+Train the model and save all artifacts to `models/` (LogReg):
  ```
- python train_pipeline.py
+ python train_pipeline.py model=lr
+```
+Train the model and save all artifacts to `models/` (Random Forest):
+ ```
+ python train_pipeline.py model=rf
 ```
 Evaluate the model and save predictions to `models/`:
 ```
