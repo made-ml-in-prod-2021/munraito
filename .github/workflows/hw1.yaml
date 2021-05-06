@@ -27,6 +27,6 @@ jobs:
       run: |
         flake8 ml_project/ --count --max-line-length=88
     - name: Test via pytest
-      working-directory: ./ml_project
       run: |
-        pytest -v
+        cd ml_project
+        pytest tests/ -v
