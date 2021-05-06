@@ -28,4 +28,5 @@ jobs:
         flake8 ml_project/ --count --max-line-length=88
     - name: Test via pytest
       run: |
-        pytest ml_project/ -v
+      working-directory: ./ml_project
+        pytest -v
