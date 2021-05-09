@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from app import app
-from src.utils import HeartDiseaseModel
 from src.features import COL_ORDER
 
 client = TestClient(app)

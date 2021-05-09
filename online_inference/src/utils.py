@@ -14,7 +14,7 @@ from sklearn.compose import ColumnTransformer
 from src.features import CAT_FEATS, NUM_FEATS, COL_ORDER
 
 SklearnClassifierModel = Union[RandomForestClassifier, LogisticRegression]
-PATH_TO_CONFIG = "main_config.yaml"
+PATH_TO_CONFIG = "src/main_config.yaml"
 
 
 def create_logger(name: str, log_config: dict):
