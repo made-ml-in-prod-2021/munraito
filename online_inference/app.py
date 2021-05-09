@@ -5,9 +5,14 @@ from fastapi import FastAPI
 from sklearn.compose import ColumnTransformer
 
 from src.utils import (
-    SklearnClassifierModel, load_object, load_config,
-    HeartDiseaseModel, ModelResponse, validate_data, make_predict,
-    create_logger
+    SklearnClassifierModel,
+    load_object,
+    load_config,
+    HeartDiseaseModel,
+    ModelResponse,
+    validate_data,
+    make_predict,
+    create_logger,
 )
 
 
@@ -29,7 +34,9 @@ def load_model():
     model_path = config["model_path"]
     transformer_path = config["transformer_path"]
     if model_path is None or transformer_path is None:
-        err = f"PATH_TO_MODEL is {model_path}, PATH_TO_TRANSFORMER is {transformer_path}"
+        err = (
+            f"PATH_TO_MODEL is {model_path}, PATH_TO_TRANSFORMER is {transformer_path}"
+        )
         logger.error(err)
         raise RuntimeError(err)
     model = load_object(model_path)
@@ -45,4 +52,6 @@ def predict(request: HeartDiseaseModel):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=os.getenv("PORT", 8000))  # config["host"] config["port"]
+    uvicorn.run(
+        app, host="0.0.0.0", port=os.getenv("PORT", 8000)
+    )  # config["host"] config["port"]

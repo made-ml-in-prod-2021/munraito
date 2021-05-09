@@ -22,7 +22,7 @@ CAT_FEATS = {
     "exang": CatFeat("exang", 2),
     "slope": CatFeat("slope", 3),
     "ca": CatFeat("ca", 5),
-    "thal": CatFeat("thal", 4)
+    "thal": CatFeat("thal", 4),
 }
 NUM_FEATS = {
     "age": NumFeat("age", 54.37, 9.08),
@@ -32,6 +32,18 @@ NUM_FEATS = {
     "oldpeak": NumFeat("oldpeak", 1.04, 1.16),
 }
 
-COL_ORDER = ["age", "sex", "cp", "trestbps", "chol",
-                    "fbs", "restecg", "thalach", "exang", "oldpeak",
-                    "slope", "ca", "thal"]
+COL_ORDER = [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal",
+]

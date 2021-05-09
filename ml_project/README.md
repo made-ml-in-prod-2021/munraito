@@ -1,4 +1,4 @@
-ml_project
+ml_project (HW 1)
 ==============================
 
 Production ready ML-project

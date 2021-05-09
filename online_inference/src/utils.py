@@ -20,8 +20,9 @@ PATH_TO_CONFIG = "src/main_config.yaml"
 def create_logger(name: str, log_config: dict):
     logger = logging.getLogger(name)
     logger.setLevel(log_config["level"])
-    simple_formatter = logging.Formatter(fmt=log_config["format"],
-                                         datefmt=log_config["date_format"])
+    simple_formatter = logging.Formatter(
+        fmt=log_config["format"], datefmt=log_config["date_format"]
+    )
     console_handler = logging.StreamHandler()
     console_handler.setLevel(log_config["level"])
     console_handler.setFormatter(simple_formatter)
@@ -53,7 +54,10 @@ class ModelResponse(BaseModel):
 
 def validate_data(request: HeartDiseaseModel) -> NoReturn:
     if not isinstance(request, HeartDiseaseModel):
-        raise HTTPException(status_code=400, detail=f"Input data is not in the right format ({HeartDiseaseModel})")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Input data is not in the right format ({HeartDiseaseModel})",
+        )
     if not len(request.data):
         raise HTTPException(status_code=400, detail="Input data list is empty")
     redundant_feats = set(request.feature_names) - set(COL_ORDER)
@@ -66,17 +70,20 @@ def validate_data(request: HeartDiseaseModel) -> NoReturn:
         raise HTTPException(status_code=400, detail="Column order is incorrect")
     for feat, val in zip(request.feature_names, request.data[0]):
         if feat in CAT_FEATS and not val.is_integer() and val is not None:
-            raise HTTPException(status_code=400, detail=f"'{feat}' feature is not categorical")
+            raise HTTPException(
+                status_code=400, detail=f"'{feat}' feature is not categorical"
+            )
         if feat in NUM_FEATS and not isinstance(val, float) and val is not None:
             raise HTTPException(status_code=400, detail=f"{feat} is not numerical")
 
 
 def make_predict(
-        data: List, feature_names: List[str], model: SklearnClassifierModel, transfomer: ColumnTransformer
+    data: List,
+    feature_names: List[str],
+    model: SklearnClassifierModel,
+    transfomer: ColumnTransformer,
 ) -> List[ModelResponse]:
     df = pd.DataFrame(data, columns=feature_names)
     transformed_df = pd.DataFrame(transfomer.transform(df))
     preds = model.predict(transformed_df)
-    return [
-        ModelResponse(disease=preds)
-    ]
+    return [ModelResponse(disease=preds)]
