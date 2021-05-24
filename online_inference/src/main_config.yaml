@@ -1,0 +1,8 @@
+host: '0.0.0.0'
+port: 8000
+model_path: "model/model.pkl"
+transformer_path: "model/transformer.pkl"
+logging:
+  format: '%(asctime)s %(levelname)s %(message)s'
+  date_format: '%Y-%m-%d %H:%M:%S'
+  level: 'INFO'
