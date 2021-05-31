@@ -36,7 +36,7 @@ with DAG(
     predict = DockerOperator(
         task_id="generate-predicts",
         image="munraito/airflow-predict",
-        command="--input-dir /data/raw/{{ ds }} --output-dir /data/predictions/{{ ds }}"
+        command="--input-dir /data/raww/{{ ds }} --output-dir /data/predictions/{{ ds }}"
                 " --model-dir {{ var.value.MODEL_DIR }}/{{ ds }}/",
         network_mode="bridge",
         do_xcom_push=False,

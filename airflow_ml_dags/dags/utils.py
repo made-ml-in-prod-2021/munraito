@@ -2,7 +2,8 @@ from datetime import timedelta
 
 default_args = {
     "owner": "airflow",
-    "email": ["airflow@example.com"],
+    "email_on_failure": True,
+    "email": ["airflow@example.com", "cvetvitaly@yandex.ru"],
     "retries": 1,
     "retry_delay": timedelta(minutes=5)
 }
