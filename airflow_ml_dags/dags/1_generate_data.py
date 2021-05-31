@@ -3,7 +3,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.utils.dates import days_ago
 
-from utils import default_args
+from utils import default_args, DEFAULT_VOLUME
 
 
 with DAG(
@@ -19,7 +19,7 @@ with DAG(
         command="/data/raw/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
-        volumes=["/Users/munraito/MADE/ml_in_prod/munraito/airflow_ml_dags/data:/data"]
+        volumes=[DEFAULT_VOLUME]
     )
 
     end_task = DummyOperator(task_id='end-generate-data')

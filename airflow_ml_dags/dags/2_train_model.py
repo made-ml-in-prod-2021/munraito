@@ -4,7 +4,7 @@ from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.utils.dates import days_ago
 from airflow.sensors.filesystem import FileSensor
 
-from utils import default_args
+from utils import default_args, DEFAULT_VOLUME
 
 
 with DAG(
@@ -15,13 +15,13 @@ with DAG(
 ) as dag:
     start_task = DummyOperator(task_id='begin-train-pipeline')
     data_await = FileSensor(
-        task_id="await_features",
+        task_id="await-features",
         poke_interval=10,
         retries=100,
         filepath="data/raw/{{ ds }}/data.csv"
     )
     target_await = FileSensor(
-        task_id="await_target",
+        task_id="await-target",
         poke_interval=10,
         retries=100,
         filepath="data/raw/{{ ds }}/target.csv"
@@ -32,7 +32,7 @@ with DAG(
         command="--input-dir /data/raw/{{ ds }} --output-dir /data/split/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
-        volumes=["/Users/munraito/MADE/ml_in_prod/munraito/airflow_ml_dags/data:/data"]
+        volumes=[DEFAULT_VOLUME]
     )
     preprocess = DockerOperator(
         task_id="preprocess-data",
@@ -41,7 +41,7 @@ with DAG(
                 " --model-dir /data/models/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
-        volumes=["/Users/munraito/MADE/ml_in_prod/munraito/airflow_ml_dags/data:/data"]
+        volumes=[DEFAULT_VOLUME]
     )
     train = DockerOperator(
         task_id="train-model",
@@ -49,7 +49,7 @@ with DAG(
         command="--data-dir /data/processed/{{ ds }} --model-dir /data/models/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
-        volumes=["/Users/munraito/MADE/ml_in_prod/munraito/airflow_ml_dags/data:/data"]
+        volumes=[DEFAULT_VOLUME]
     )
     validate = DockerOperator(
         task_id="evaluate-model",
@@ -57,7 +57,7 @@ with DAG(
         command="--data-dir /data/split/{{ ds }} --model-dir /data/models/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
-        volumes=["/Users/munraito/MADE/ml_in_prod/munraito/airflow_ml_dags/data:/data"]
+        volumes=[DEFAULT_VOLUME]
     )
     end_task = DummyOperator(task_id='end-train-pipeline')
 
