@@ -28,8 +28,6 @@ services:
       - POSTGRES_MULTIPLE_DATABASES=airflowdb,mlflowdb
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
-#    networks:
-#      - airflow-net
     ports:
       - "5432:5432"
 
@@ -39,8 +37,6 @@ services:
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
     image: airflow-docker
-#    networks:
-#      - airflow-net
     depends_on:
       - postgres
     environment: *airflow_environment
@@ -56,8 +52,6 @@ services:
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
     image: airflow-docker
-#    networks:
-#      - airflow-net
     restart: always
     depends_on:
       - postgres
@@ -74,8 +68,6 @@ services:
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
     image: airflow-docker
-#    networks:
-#      - airflow-net
     restart: always
     depends_on:
       - postgres
