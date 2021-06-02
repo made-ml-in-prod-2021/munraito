@@ -19,5 +19,5 @@ def split(input_dir: str, output_dir: str):
     val.to_csv(os.path.join(output_dir, "val.csv"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     split()

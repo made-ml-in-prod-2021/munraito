@@ -20,9 +20,7 @@ def train(data_dir: str, model_name: str):
         model = LogisticRegression()
         model.fit(X, y)
         mlflow.sklearn.log_model(
-            sk_model=model,
-            artifact_path='models',
-            registered_model_name=model_name
+            sk_model=model, artifact_path="models", registered_model_name=model_name
         )
 
 

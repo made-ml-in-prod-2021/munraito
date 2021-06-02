@@ -25,5 +25,5 @@ def predict(input_dir: str, output_dir: str, model_name: str, transformer_dir: s
     data.to_csv(os.path.join(output_dir, "predictions.csv"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     predict()

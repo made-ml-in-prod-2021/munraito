@@ -13,5 +13,5 @@ def download(output_dir: str):
     y.to_csv(os.path.join(output_dir, "target.csv"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     download()
