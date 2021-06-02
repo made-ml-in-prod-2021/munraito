@@ -1,10 +1,12 @@
 version: '3.7'
 # ====================================== AIRFLOW ENVIRONMENT VARIABLES =======================================
+x-airflow-image: &airflow_image apache/airflow:2.0.0-python3.6
+
 x-environment: &airflow_environment
   - AIRFLOW__CORE__EXECUTOR=LocalExecutor
   - AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS=False
   - AIRFLOW__CORE__LOAD_EXAMPLES=False
-  - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@postgres:5432/airflow
+  - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@postgres:5432/airflowdb
   - AIRFLOW__CORE__STORE_DAG_CODE=True
   - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
@@ -12,25 +14,33 @@ x-environment: &airflow_environment
   - AIRFLOW__SMTP__SMTP_PORT=587
   - AIRFLOW__SMTP__SMTP_USER=${GUSER}
   - AIRFLOW__SMTP__SMTP_PASSWORD=${GPASS}
-  - AIRFLOW_VAR_MODEL_DIR=data/models
+  - MLFLOW_TRACKING_URL=http://localhost:5000
+  - MODEL_NAME=LogReg
+  - AIRFLOW__LOGGING__LOGGING_LEVEL=INFO
 
-x-airflow-image: &airflow_image apache/airflow:2.0.0-python3.6
 # ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 services:
   postgres:
     image: postgres:12-alpine
+    volumes:
+      - ./docker-postgres-multiple-databases:/docker-entrypoint-initdb.d
     environment:
+      - POSTGRES_MULTIPLE_DATABASES=airflowdb,mlflowdb
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+#    networks:
+#      - airflow-net
     ports:
       - "5432:5432"
+
   init:
     build:
       context: images/airflow-docker
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
-    image: munraito/airflow-docker
+    image: airflow-docker
+#    networks:
+#      - airflow-net
     depends_on:
       - postgres
     environment: *airflow_environment
@@ -45,8 +55,9 @@ services:
       context: images/airflow-docker
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
-    image: munraito/airflow-docker
-
+    image: airflow-docker
+#    networks:
+#      - airflow-net
     restart: always
     depends_on:
       - postgres
@@ -62,8 +73,9 @@ services:
       context: images/airflow-docker
       args:
         AIRFLOW_BASE_IMAGE: *airflow_image
-    image: munraito/airflow-docker
-
+    image: airflow-docker
+#    networks:
+#      - airflow-net
     restart: always
     depends_on:
       - postgres
@@ -78,44 +90,78 @@ services:
   ml_base:
     build:
       context: images/airflow-ml-base
-    image: munraito/airflow-ml-base
+    image: airflow-ml-base
     restart: "no"
 
   predict:
     build:
       context: images/airflow-predict
-    image: munraito/airflow-predict
+    image: airflow-predict
+    depends_on:
+      - ml_base
     restart: "no"
 
   download:
     build:
       context: images/airflow-download
-    image: munraito/airflow-download
+    image: airflow-download
+    depends_on:
+      - ml_base
     restart: "no"
 
   preprocess:
     build:
       context: images/airflow-preprocess
-    image: munraito/airflow-preprocess
+    image: airflow-preprocess
+    depends_on:
+      - ml_base
     restart: "no"
 
   split:
     build:
       context: images/airflow-split
-    image: munraito/airflow-split
+    image: airflow-split
+    depends_on:
+      - ml_base
     restart: "no"
 
   train:
     build:
       context: images/airflow-train
-    image: munraito/airflow-train
+    image: airflow-train
+    depends_on:
+      - ml_base
     restart: "no"
 
   validate:
     build:
       context: images/airflow-validate
-    image: munraito/airflow-validate
+    image: airflow-validate
+    depends_on:
+      - ml_base
     restart: "no"
+
+  mlflow:
+    build:
+      context: images/mlflow
+    image: mlflow
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlrun_data:/mlruns
+    command:
+      - sh
+      - -c
+      - mlflow server
+        --host 0.0.0.0
+        --port 5000
+        --backend-store-uri postgresql://airflow:airflow@postgres:5432/mlflowdb
+        --default-artifact-root /mlruns
+    restart: always
 
 volumes:
   logs:
+  mlrun_data:
+      name: mlrun_data

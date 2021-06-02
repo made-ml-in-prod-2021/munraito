@@ -1,10 +1,12 @@
+import os
+
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.utils.dates import days_ago
 from airflow.sensors.filesystem import FileSensor
 
-from utils import default_args, DEFAULT_VOLUME
+from utils import default_args, DEFAULT_VOLUME, ARTIFACT_VOLUME, mlflow_env, model_name
 
 
 with DAG(
@@ -28,7 +30,7 @@ with DAG(
     )
     split = DockerOperator(
         task_id="split-data",
-        image="munraito/airflow-split",
+        image="airflow-split",
         command="--input-dir /data/raw/{{ ds }} --output-dir /data/split/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
@@ -36,28 +38,34 @@ with DAG(
     )
     preprocess = DockerOperator(
         task_id="preprocess-data",
-        image="munraito/airflow-preprocess",
+        image="airflow-preprocess",
         command="--input-dir /data/split/{{ ds }} --output-dir /data/processed/{{ ds }}"
-                " --model-dir /data/models/{{ ds }}",
+                " --transformer-dir /data/transformers/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
         volumes=[DEFAULT_VOLUME]
     )
+
+
     train = DockerOperator(
         task_id="train-model",
-        image="munraito/airflow-train",
-        command="--data-dir /data/processed/{{ ds }} --model-dir /data/models/{{ ds }}",
-        network_mode="bridge",
+        image="airflow-train",
+        command="--data-dir /data/processed/{{ ds }}"
+                f" --model-name {model_name}",
+        network_mode="host",
+        private_environment=mlflow_env,
         do_xcom_push=False,
-        volumes=[DEFAULT_VOLUME]
+        volumes=[DEFAULT_VOLUME, ARTIFACT_VOLUME]
     )
     validate = DockerOperator(
         task_id="evaluate-model",
-        image="munraito/airflow-validate",
-        command="--data-dir /data/split/{{ ds }} --model-dir /data/models/{{ ds }}",
-        network_mode="bridge",
+        image="airflow-validate",
+        command="--data-dir /data/split/{{ ds }} --transformer-dir /data/transformers/{{ ds }}"
+                f" --model-name {model_name}",
+        network_mode="host",
+        private_environment=mlflow_env,
         do_xcom_push=False,
-        volumes=[DEFAULT_VOLUME]
+        volumes=[DEFAULT_VOLUME, ARTIFACT_VOLUME]
     )
     end_task = DummyOperator(task_id='end-train-pipeline')
 

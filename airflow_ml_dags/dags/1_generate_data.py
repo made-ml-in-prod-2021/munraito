@@ -15,7 +15,7 @@ with DAG(
     start_task = DummyOperator(task_id='begin-generate-data')
     download_data = DockerOperator(
         task_id="docker-airflow-download",
-        image="munraito/airflow-download",
+        image="airflow-download",
         command="/data/raw/{{ ds }}",
         network_mode="bridge",
         do_xcom_push=False,
