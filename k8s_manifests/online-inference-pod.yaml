@@ -10,10 +10,3 @@ spec:
       name: online-inference
       ports:
         - containerPort: 8000
-      resources:
-        requests:
-          memory: "32Mi"
-          cpu: "100m"
-        limit:
-          memory: "1Gi"
-          cpu: "500m"

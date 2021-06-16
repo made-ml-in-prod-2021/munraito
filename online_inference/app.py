@@ -1,4 +1,5 @@
 import os
+import time
 from typing import List, Optional
 import uvicorn
 from fastapi import FastAPI
@@ -18,6 +19,7 @@ from src.utils import (
 
 model: Optional[SklearnClassifierModel] = None
 transformer: Optional[ColumnTransformer] = None
+startup_time: Optional[float] = None
 app = FastAPI()
 config = load_config()
 logger = create_logger("main_app", config["logging"])
@@ -30,7 +32,8 @@ def main():
 
 @app.on_event("startup")
 def load_model():
-    global model, transformer
+    time.sleep(25)
+    global model, transformer, startup_time
     model_path = config["model_path"]
     transformer_path = config["transformer_path"]
     if model_path is None or transformer_path is None:
@@ -42,6 +45,14 @@ def load_model():
     model = load_object(model_path)
     transformer = load_object(transformer_path)
     logger.info(f"{model_path} and {transformer_path} successfully loaded")
+    startup_time = time.time()
+
+
+@app.get("/health")
+def check_app() -> bool:
+    if (time.time() - startup_time) > 120:
+        raise RuntimeError("Had to kill you, sorry")
+    return not (model is None)
 
 
 @app.get("/predict/", response_model=List[ModelResponse])

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: online-inference-probes
+  labels:
+    app: online-inference
+spec:
+  containers:
+    - image: munraito/online_inference:v4
+      name: online-inference
+      imagePullPolicy: "Always"
+      ports:
+        - containerPort: 8000
+      readinessProbe:
+        tcpSocket:
+          port: 8000
+        initialDelaySeconds: 15
+        periodSeconds: 10
+        failureThreshold: 5
+      livenessProbe:
+        httpGet:
+          path: /health
+          port: 8000
+        initialDelaySeconds: 15
+        periodSeconds: 20
+        failureThreshold: 1
