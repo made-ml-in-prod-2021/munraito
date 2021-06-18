@@ -12,8 +12,8 @@ spec:
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 0
-      maxUnavailable: 100%
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     metadata:
       name: online-inference-dep
@@ -21,7 +21,7 @@ spec:
         app: online-inference
     spec:
       containers:
-        - image: munraito/online_inference:v3
+        - image: munraito/online_inference:v4
           name: online-inference
           ports:
             - containerPort: 8000
