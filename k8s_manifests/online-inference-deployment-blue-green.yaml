@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: online-inference-blue-green
+  labels:
+    app: online-inference
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: online-inference
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+  template:
+    metadata:
+      name: online-inference-dep
+      labels:
+        app: online-inference
+    spec:
+      containers:
+        - image: munraito/online_inference:v3
+          name: online-inference
+          ports:
+            - containerPort: 8000
