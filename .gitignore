@@ -1,0 +1,3 @@
+/airflow_ml_dags/data/*
+/.github/
+/.idea/
